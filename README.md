@@ -1,5 +1,11 @@
-Swagger UI
+Neo4j Swagger UI
 ==========
+
+This is a fork of [Swagger UI](https://github.com/wordnik/swagger-ui) that has been enhanced for [neo4j](http://neo4j.org) compatibility. It is intended to be used in conjunction with [node-neo4j-swagger-api](https://github.com/tinj/node-neo4j-swagger-api). Online demo at http://neo4j-swagger.tinj.com.
+
+
+Original Swagger Readme
+-------------
 
 Swagger UI is part of [Swagger](http://swagger.wordnik.com/) project.  The Swagger project allows you to produce, visualize and consume your OWN RESTful services.  No proxy or 3rd party services required.  Do it your own way.
 
