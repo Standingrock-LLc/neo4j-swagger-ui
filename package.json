@@ -15,8 +15,16 @@
     "email": "mat@tinj.com",
     "url": "http://tinj.com"
   },
+  "keywords": [
+    "neo4j",
+    "api",
+    "swagger",
+  ],
   "license": "Apache",
   "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/tinj/neo4j-swagger-ui/issues"
+  },
   "dependencies": {
     "coffee-script": "~1.5.0",
     "swagger-client": "~2.0",
