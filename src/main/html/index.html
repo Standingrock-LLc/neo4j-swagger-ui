@@ -37,6 +37,18 @@
       docExpansion: "none"
     });
 
+    $('#neo4j_display').change(function() {
+      var val = $("option:selected", this).val();
+      if ("true" == val) {
+        console.log('show neo4j');
+        window.authorizations.add("neo4j", new ApiKeyAuthorization("neo4j", val, "query"));
+      } else {
+        val = null;
+        console.log('hide neo4j');
+        delete window.authorizations.authz.neo4j;
+      }
+    });
+
     $('#input_apiKey').change(function() {
       var key = $('#input_apiKey')[0].value;
       console.log("key: " + key);
@@ -48,6 +60,7 @@
 
     $('#input_apiKey').val("special-key");
     $('#input_apiKey').change();
+    $('#neo4j_display').change();
 
     window.swaggerUi.load();
   });
@@ -71,6 +84,10 @@
       <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
       <div class='input'><a id="explore" href="#">Explore</a></div>
     </form>
+    <select name="neo4j" id="neo4j_display">
+      <option selected value="true">show neo4j</option>
+      <option value="false">hide neo4j</option>
+    </select>
   </div>
 </div>
 
