@@ -3,6 +3,7 @@
 <head>
   <title>Swagger UI</title>
   <link href='//fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'/>
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,600,300" rel="stylesheet" type="text/css">
   <link href='css/highlight.default.css' media='screen' rel='stylesheet' type='text/css'/>
   <link href='css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
   <script type="text/javascript" src="lib/shred.bundle.js" /></script>
@@ -34,7 +35,7 @@
           console.log(data);
         }
       },
-      docExpansion: "none"
+      docExpansion: "list"
     });
 
     $('#neo4j_display').change(function() {
@@ -69,6 +70,28 @@
 </head>
 
 <body>
+<div id='neo4j-header'>
+  <div class="swagger-ui-wrap">
+    <a href="http://neo4j.org">
+      <img id="neo4j-logo" src="http://assets.neo4j.org/new/img/logo-white.svg" alt="Neo4j World's Leading Graph Database">
+      <div class="neo4j-brand">Neo4j</div>
+    </a>
+    <a href="https://github.com/tinj/node-neo4j-swagger-api">
+      <div class="neo4j-title">Build Awesome Neo4j APIs</div>
+    </a>
+    <a href="https://github.com/tinj/node-neo4j-swagger-api">
+      <div class="neo4j-link">with neo4j-swagger </div>
+    </a>
+    <a href="https://github.com/tinj/neo4j-swagger-ui">
+      <div class="neo4j-link">( ui )</div>
+    </a>
+    <select name="neo4j" id="neo4j_display">
+      <option selected value="true">show neo4j in headers</option>
+      <option value="false">hide neo4j in headers</option>
+    </select>
+
+  </div>
+</div>
 <div id='header'>
   <div class="swagger-ui-wrap">
     <a id="logo" href="http://swagger.wordnik.com">swagger</a>
@@ -84,10 +107,6 @@
       <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
       <div class='input'><a id="explore" href="#">Explore</a></div>
     </form>
-    <select name="neo4j" id="neo4j_display">
-      <option selected value="true">show neo4j</option>
-      <option value="false">hide neo4j</option>
-    </select>
   </div>
 </div>
 
