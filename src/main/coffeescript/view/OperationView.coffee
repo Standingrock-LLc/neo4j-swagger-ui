@@ -303,15 +303,16 @@ class OperationView extends Backbone.View
     $(".response_body", $(@el)).html response_body
 
 
-    if headers["Neo4j-Query"]
+    if headers["Neo4j"]
       $('.neo4j_headers').show();
-      $(".response_neo4j_query", $(@el)).html "<pre>" + JSON.parse(headers["Neo4j-Query"]).replace(/\n/g, "<br>") + "</pre>"
-    if headers["Neo4j-Params"]
-      code = $('<code />').text(JSON.stringify(JSON.parse(headers["Neo4j-Params"]), null, 2))
+
+      neo4j = JSON.parse(headers["Neo4j"]);
+
+      $(".response_neo4j_query", $(@el)).html "<pre>" + neo4j.query.replace(/\n/g, "<br>") + "</pre>"
+      code = $('<code />').text(JSON.stringify(neo4j.params), null, 2)
       pre = $('<pre class="json" />').append(code)
       $(".response_neo4j_params", $(@el)).html pre
-    if headers["Neo4j-Results"]
-      code = $('<code />').text(JSON.stringify(JSON.parse(headers["Neo4j-Results"]), null, 2))
+      code = $('<code />').text(JSON.stringify(neo4j.results), null, 2)
       pre = $('<pre class="json" />').append(code)
       $(".response_neo4j_results", $(@el)).html pre
 

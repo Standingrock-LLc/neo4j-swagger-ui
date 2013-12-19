@@ -1814,7 +1814,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     };
 
     OperationView.prototype.showStatus = function(data) {
-      var code, content, contentType, headers, pre, response_body;
+      var code, content, contentType, headers, neo4j, pre, response_body;
       content = data.content.data;
       headers = data.getHeaders();
       contentType = headers["Content-Type"];
@@ -1840,17 +1840,14 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       $(".request_url", $(this.el)).html("<pre>" + data.request.url + "</pre>");
       $(".response_code", $(this.el)).html("<pre>" + data.status + "</pre>");
       $(".response_body", $(this.el)).html(response_body);
-      if (headers["Neo4j-Query"]) {
+      if (headers["Neo4j"]) {
         $('.neo4j_headers').show();
-        $(".response_neo4j_query", $(this.el)).html("<pre>" + JSON.parse(headers["Neo4j-Query"]).replace(/\n/g, "<br>") + "</pre>");
-      }
-      if (headers["Neo4j-Params"]) {
-        code = $('<code />').text(JSON.stringify(JSON.parse(headers["Neo4j-Params"]), null, 2));
+        neo4j = JSON.parse(headers["Neo4j"]);
+        $(".response_neo4j_query", $(this.el)).html("<pre>" + neo4j.query.replace(/\n/g, "<br>") + "</pre>");
+        code = $('<code />').text(JSON.stringify(neo4j.params), null, 2);
         pre = $('<pre class="json" />').append(code);
         $(".response_neo4j_params", $(this.el)).html(pre);
-      }
-      if (headers["Neo4j-Results"]) {
-        code = $('<code />').text(JSON.stringify(JSON.parse(headers["Neo4j-Results"]), null, 2));
+        code = $('<code />').text(JSON.stringify(neo4j.results), null, 2);
         pre = $('<pre class="json" />').append(code);
         $(".response_neo4j_results", $(this.el)).html(pre);
         window.headers = headers;
