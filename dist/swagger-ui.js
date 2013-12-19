@@ -340,7 +340,7 @@ function program5(depth0,data) {
 function program7(depth0,data) {
   
   
-  return "\n          <div style='margin:0;padding:0;display:inline'></div>\n          <h4>Error Status Codes</h4>\n          <table class='fullwidth'>\n            <thead>\n            <tr>\n              <th>HTTP Status Code</th>\n              <th>Reason</th>\n            </tr>\n            </thead>\n            <tbody class=\"operation-status\">\n            \n            </tbody>\n          </table>\n          ";
+  return "\n          <div style='margin:0;padding:0;display:inline'></div>\n          <h4>Error Status Codes</h4>\n          <table class='fullwidth'>\n            <thead>\n            <tr>\n              <th>HTTP Status Code</th>\n              <th>Reason</th>\n            </tr>\n            </thead>\n            <tbody class=\"operation-status\">\n\n            </tbody>\n          </table>\n          ";
   }
 
 function program9(depth0,data) {
@@ -466,7 +466,7 @@ function program11(depth0,data) {
   buffer += "\n          ";
   stack1 = helpers['if'].call(depth0, depth0.isReadOnly, {hash:{},inverse:self.program(11, program11, data),fn:self.program(9, program9, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n        </form>\n        <div class='response' style='display:none'>\n          <h4>Request URL</h4>\n          <div class='block request_url'></div>\n          <h4>Response Body</h4>\n          <div class='block response_body'></div>\n          <h4>Response Code</h4>\n          <div class='block response_code'></div>\n          <h4>Response Headers</h4>\n          <div class='block response_headers'></div>\n        </div>\n      </div>\n    </li>\n  </ul>\n";
+  buffer += "\n        </form>\n        <div class='response' style='display:none'>\n          <h4>Request URL</h4>\n          <div class='block request_url'></div>\n          <h4>Response Body</h4>\n          <div class='block response_body'></div>\n          <h4>Response Code</h4>\n          <div class='block response_code'></div>\n          <h4>Response Headers</h4>\n          <div class='block response_headers'></div>\n          <div class='neo4j_headers' style='display:none'>\n            <h4>Neo4j Query</h4>\n            <div class='block response_neo4j_query'></div>\n            <h4>Neo4j Parmas</h4>\n            <div class='block response_neo4j_params'></div>\n            <h4>Neo4j Results</h4>\n            <div class='block response_neo4j_results'></div>\n          </div>\n        </div>\n      </div>\n    </li>\n  </ul>\n";
   return buffer;
   });
 })();
@@ -1840,7 +1840,18 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       $(".request_url", $(this.el)).html("<pre>" + data.request.url + "</pre>");
       $(".response_code", $(this.el)).html("<pre>" + data.status + "</pre>");
       $(".response_body", $(this.el)).html(response_body);
-      $(".response_headers", $(this.el)).html("<pre>" + JSON.stringify(data.getHeaders(), null, "  ").replace(/\n/g, "<br>") + "</pre>");
+      if (headers["Neo4j-Query"]) {
+        $('.neo4j_headers').show();
+        $(".response_neo4j_query", $(this.el)).html("<pre>" + headers["Neo4j-Query"].replace(/\n/g, "<br>") + "</pre>");
+      }
+      if (headers["Neo4j-Params"]) {
+        $(".response_neo4j_params", $(this.el)).html("<pre>" + headers["Neo4j-Params"].replace(/\n/g, "<br>") + "</pre>");
+      }
+      if (headers["Neo4j-Results"]) {
+        $(".response_neo4j_results", $(this.el)).html("<pre>" + headers["Neo4j-Results"].replace(/\n/g, "<br>") + "</pre>");
+        window.headers = headers;
+      }
+      $(".response_headers", $(this.el)).html("<pre>" + JSON.stringify(headers, null, "  ").replace(/\n/g, "<br>") + "</pre>");
       $(".response", $(this.el)).slideDown();
       $(".response_hider", $(this.el)).show();
       $(".response_throbber", $(this.el)).hide();

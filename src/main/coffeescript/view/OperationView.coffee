@@ -21,7 +21,7 @@ class OperationView extends Backbone.View
         sampleJSON: @model.responseSampleJSON
         isParam: false
         signature: @model.responseClassSignature
-        
+
       responseSignatureView = new SignatureView({model: signatureModel, tagName: 'div'})
       $('.model-signature', $(@el)).append responseSignatureView.render().el
     else
@@ -61,7 +61,7 @@ class OperationView extends Backbone.View
     # Render status codes
     statusCodeView = new StatusCodeView({model: statusCode, tagName: 'tr'})
     $('.operation-status', $(@el)).append statusCodeView.render().el
-  
+
   submitOperation: (e) ->
     e?.preventDefault()
     # Check for errors
@@ -92,7 +92,7 @@ class OperationView extends Backbone.View
         if(o.value? && jQuery.trim(o.value).length > 0)
           map["body"] = o.value
 
-      for o in form.find("select") 
+      for o in form.find("select")
         val = this.getSelectedValue o
         if(val? && jQuery.trim(val).length > 0)
           map[o.name] = val
@@ -137,7 +137,7 @@ class OperationView extends Backbone.View
 
     console.log(bodyParam)
 
-    @invocationUrl = 
+    @invocationUrl =
       if @model.supportHeaderParams()
         headerParams = @model.getHeaderParams(map)
         @model.urlify(map, false)
@@ -146,7 +146,7 @@ class OperationView extends Backbone.View
 
     $(".request_url", $(@el)).html "<pre>" + @invocationUrl + "</pre>"
 
-    obj = 
+    obj =
       type: @model.method
       url: @invocationUrl
       headers: headerParams
@@ -169,7 +169,7 @@ class OperationView extends Backbone.View
     false
     # end of file-upload nastiness
 
-  # wraps a jquery response as a shred response  
+  # wraps a jquery response as a shred response
   wrap: (data) ->
     o = {}
     o.content = {}
@@ -181,12 +181,12 @@ class OperationView extends Backbone.View
     o
 
   getSelectedValue: (select) ->
-    if !select.multiple 
+    if !select.multiple
       select.value
     else
       options = []
       options.push opt.value for opt in select.options when opt.selected
-      if options.length > 0 
+      if options.length > 0
         options.join ","
       else
         null
@@ -222,7 +222,7 @@ class OperationView extends Backbone.View
     lines = xml.split('\n')
     indent = 0
     lastType = 'other'
-    # 4 types of tags - single, closing, opening, other (text, doctype, comment) - 4*4 = 16 transitions 
+    # 4 types of tags - single, closing, opening, other (text, doctype, comment) - 4*4 = 16 transitions
     transitions =
       'single->single': 0
       'single->closing': -1
@@ -266,9 +266,9 @@ class OperationView extends Backbone.View
           formatted = formatted.substr(0, formatted.length - 1) + ln + '\n'
         else
           formatted += padding + ln + '\n'
-      
+
     formatted
-    
+
 
   # puts the response data in UI
   showStatus: (data) ->
@@ -301,7 +301,19 @@ class OperationView extends Backbone.View
     $(".request_url", $(@el)).html "<pre>" + data.request.url + "</pre>"
     $(".response_code", $(@el)).html "<pre>" + data.status + "</pre>"
     $(".response_body", $(@el)).html response_body
-    $(".response_headers", $(@el)).html "<pre>" + JSON.stringify(data.getHeaders(), null, "  ").replace(/\n/g, "<br>") + "</pre>"
+
+
+    if headers["Neo4j-Query"]
+      $('.neo4j_headers').show();
+      $(".response_neo4j_query", $(@el)).html "<pre>" + headers["Neo4j-Query"].replace(/\n/g, "<br>") + "</pre>"
+    if headers["Neo4j-Params"]
+      $(".response_neo4j_params", $(@el)).html "<pre>" + headers["Neo4j-Params"].replace(/\n/g, "<br>") + "</pre>"
+    if headers["Neo4j-Results"]
+      $(".response_neo4j_results", $(@el)).html "<pre>" + headers["Neo4j-Results"].replace(/\n/g, "<br>") + "</pre>"
+      window.headers = headers
+
+    $(".response_headers", $(@el)).html "<pre>" + JSON.stringify(headers, null, "  ").replace(/\n/g, "<br>") + "</pre>"
+
     $(".response", $(@el)).slideDown()
     $(".response_hider", $(@el)).show()
     $(".response_throbber", $(@el)).hide()

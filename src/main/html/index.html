@@ -43,10 +43,12 @@
       if ("true" == val) {
         console.log('show neo4j');
         window.authorizations.add("neo4j", new ApiKeyAuthorization("neo4j", val, "query"));
+        $('.neo4j_headers').show();
       } else {
         val = null;
         console.log('hide neo4j');
         delete window.authorizations.authz.neo4j;
+        $('.neo4j_headers').hide();
       }
     });
 
