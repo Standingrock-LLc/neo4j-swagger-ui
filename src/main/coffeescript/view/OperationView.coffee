@@ -305,11 +305,16 @@ class OperationView extends Backbone.View
 
     if headers["Neo4j-Query"]
       $('.neo4j_headers').show();
-      $(".response_neo4j_query", $(@el)).html "<pre>" + headers["Neo4j-Query"].replace(/\n/g, "<br>") + "</pre>"
+      $(".response_neo4j_query", $(@el)).html "<pre>" + JSON.parse(headers["Neo4j-Query"]).replace(/\n/g, "<br>") + "</pre>"
     if headers["Neo4j-Params"]
-      $(".response_neo4j_params", $(@el)).html "<pre>" + headers["Neo4j-Params"].replace(/\n/g, "<br>") + "</pre>"
+      code = $('<code />').text(JSON.stringify(JSON.parse(headers["Neo4j-Params"]), null, 2))
+      pre = $('<pre class="json" />').append(code)
+      $(".response_neo4j_params", $(@el)).html pre
     if headers["Neo4j-Results"]
-      $(".response_neo4j_results", $(@el)).html "<pre>" + headers["Neo4j-Results"].replace(/\n/g, "<br>") + "</pre>"
+      code = $('<code />').text(JSON.stringify(JSON.parse(headers["Neo4j-Results"]), null, 2))
+      pre = $('<pre class="json" />').append(code)
+      $(".response_neo4j_results", $(@el)).html pre
+
       window.headers = headers
 
     $(".response_headers", $(@el)).html "<pre>" + JSON.stringify(headers, null, "  ").replace(/\n/g, "<br>") + "</pre>"

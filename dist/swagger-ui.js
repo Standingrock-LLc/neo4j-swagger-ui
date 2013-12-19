@@ -1842,13 +1842,17 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       $(".response_body", $(this.el)).html(response_body);
       if (headers["Neo4j-Query"]) {
         $('.neo4j_headers').show();
-        $(".response_neo4j_query", $(this.el)).html("<pre>" + headers["Neo4j-Query"].replace(/\n/g, "<br>") + "</pre>");
+        $(".response_neo4j_query", $(this.el)).html("<pre>" + JSON.parse(headers["Neo4j-Query"]).replace(/\n/g, "<br>") + "</pre>");
       }
       if (headers["Neo4j-Params"]) {
-        $(".response_neo4j_params", $(this.el)).html("<pre>" + headers["Neo4j-Params"].replace(/\n/g, "<br>") + "</pre>");
+        code = $('<code />').text(JSON.stringify(JSON.parse(headers["Neo4j-Params"]), null, 2));
+        pre = $('<pre class="json" />').append(code);
+        $(".response_neo4j_params", $(this.el)).html(pre);
       }
       if (headers["Neo4j-Results"]) {
-        $(".response_neo4j_results", $(this.el)).html("<pre>" + headers["Neo4j-Results"].replace(/\n/g, "<br>") + "</pre>");
+        code = $('<code />').text(JSON.stringify(JSON.parse(headers["Neo4j-Results"]), null, 2));
+        pre = $('<pre class="json" />').append(code);
+        $(".response_neo4j_results", $(this.el)).html(pre);
         window.headers = headers;
       }
       $(".response_headers", $(this.el)).html("<pre>" + JSON.stringify(headers, null, "  ").replace(/\n/g, "<br>") + "</pre>");
