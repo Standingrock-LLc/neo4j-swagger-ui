@@ -6,6 +6,7 @@ class OperationView extends Backbone.View
   'click .submit'           : 'submitOperation'
   'click .response_hider'   : 'hideResponse'
   'click .toggleOperation'  : 'toggleOperationContent'
+  # 'click a.query-link'      : 'switchQuery'
   }
 
   initialize: ->
@@ -61,6 +62,12 @@ class OperationView extends Backbone.View
     # Render status codes
     statusCodeView = new StatusCodeView({model: statusCode, tagName: 'tr'})
     $('.operation-status', $(@el)).append statusCodeView.render().el
+
+  # addNeo4j: (param, consumes) ->
+  #   # Render a parameter
+  #   # param.consumes = consumes
+  #   neo4jView = new Neo4jView({model: param, tagName: 'tr', readOnly: @model.isReadOnly})
+  #   $('.neo4j_headers', $(@el)).append neo4jView.render().el
 
   submitOperation: (e) ->
     e?.preventDefault()
@@ -308,15 +315,28 @@ class OperationView extends Backbone.View
 
       neo4j = JSON.parse(headers["Neo4j"]);
 
-      $(".response_neo4j_query", $(@el)).html "<pre>" + neo4j.query.replace(/\n/g, "<br>") + "</pre>"
-      code = $('<code />').text(JSON.stringify(neo4j.params), null, 2)
-      pre = $('<pre class="json" />').append(code)
-      $(".response_neo4j_params", $(@el)).html pre
-      code = $('<code />').text(JSON.stringify(neo4j.results), null, 2)
-      pre = $('<pre class="json" />').append(code)
-      $(".response_neo4j_results", $(@el)).html pre
+      # check if obj or array
+      if neo4j.query
+        $(".response_neo4j_query", $(@el)).html "<pre>" + neo4j.query.replace(/\n/g, "<br>") + "</pre>"
+        code = $('<code />').text(JSON.stringify(neo4j.params), null, 2)
+        pre = $('<pre class="json" />').append(code)
+        $(".response_neo4j_params", $(@el)).html pre
+        code = $('<code />').text(JSON.stringify(neo4j.results), null, 2)
+        pre = $('<pre class="json" />').append(code)
+        $(".response_neo4j_results", $(@el)).html pre
 
-      window.headers = headers
+      else
+        neo = neo4j[0]
+        $(".response_neo4j_query", $(@el)).html "<pre>" + neo.query.replace(/\n/g, "<br>") + "</pre>"
+        code = $('<code />').text(JSON.stringify(neo.params), null, 2)
+        pre = $('<pre class="json" />').append(code)
+        $(".response_neo4j_params", $(@el)).html pre
+        code = $('<code />').text(JSON.stringify(neo.results), null, 2)
+        pre = $('<pre class="json" />').append(code)
+        $(".response_neo4j_results", $(@el)).html pre
+
+
+      # window.headers = headers
 
     $(".response_headers", $(@el)).html "<pre>" + JSON.stringify(headers, null, "  ").replace(/\n/g, "<br>") + "</pre>"
 
