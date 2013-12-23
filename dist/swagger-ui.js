@@ -2174,19 +2174,19 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     };
 
     Neo4jView.prototype.addCypherNumber = function() {
-      return $(".cyphers_list", $(this.el)).append('<li>' + (this.numCyphers + 1) + '</li>');
+      return $(".cyphers_list", $(this.el)).append("<li>" + (this.numCyphers + 1) + "</li>");
     };
 
     Neo4jView.prototype.addCypher = function(cypher) {
       var c, code, pre, _i, _len, _results;
       if (cypher.query) {
         this.addCypherNumber();
-        $(".response_neo4j_query", $(this.el)).append('<pre id="query_' + this.numCyphers + '"' + this.displayNone() + '>' + cypher.query.replace(/\n/g, "<br>") + "</pre>");
+        $(".response_neo4j_query", $(this.el)).append("<pre id='query_" + this.numCyphers + "'" + (this.displayNone()) + ">" + (cypher.query.replace(/\n/g, '<br>')) + "</pre>");
         code = $('<code />').text(JSON.stringify(cypher.params, null, 2));
-        pre = $('<pre class="json" id="params_' + this.numCyphers + '"' + this.displayNone() + '/>').append(code);
+        pre = $("<pre class='json' id='params_" + this.numCyphers + "'" + (this.displayNone()) + "/>").append(code);
         $(".response_neo4j_params", $(this.el)).append(pre);
         code = $('<code />').text(JSON.stringify(cypher.results, null, 2));
-        pre = $('<pre class="json" id="results_' + this.numCyphers + '"' + this.displayNone() + ' />').append(code);
+        pre = $("<pre class='json' id='results_" + this.numCyphers + "'" + (this.displayNone()) + "/>").append(code);
         $(".response_neo4j_results", $(this.el)).append(pre);
         return this.numCyphers++;
       } else {

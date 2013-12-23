@@ -1,6 +1,6 @@
 class Neo4jView extends Backbone.View
   events: {
-  'click .cyphers_list li'       : 'switchCypher'
+    'click .cyphers_list li'  : 'switchCypher'
   }
 
   initialize: ->
@@ -12,10 +12,6 @@ class Neo4jView extends Backbone.View
 
     @addCyphers()
 
-    # log @model
-
-    # console.log(cyphers)
-
     @
 
   template: ->
@@ -25,21 +21,21 @@ class Neo4jView extends Backbone.View
     return if @numCyphers then ' style="display:none"' else ''
 
   addCypherNumber: ->
-    $(".cyphers_list", $(@el)).append '<li>'+(@numCyphers+1)+'</li>'
+    $(".cyphers_list", $(@el)).append "<li>#{@numCyphers+1}</li>"
 
   addCypher: (cypher) ->
     # log cypher
     if cypher.query
       @addCypherNumber()
 
-      $(".response_neo4j_query", $(@el)).append '<pre id="query_'+@numCyphers+'"'+@displayNone()+'>' + cypher.query.replace(/\n/g, "<br>") + "</pre>"
+      $(".response_neo4j_query", $(@el)).append "<pre id='query_#{@numCyphers}'#{@displayNone()}>#{cypher.query.replace(/\n/g, '<br>')}</pre>"
 
       code = $('<code />').text(JSON.stringify(cypher.params, null, 2))
-      pre = $('<pre class="json" id="params_'+@numCyphers+'"'+@displayNone()+'/>').append code
+      pre = $("<pre class='json' id='params_#{@numCyphers}'#{@displayNone()}/>").append code
       $(".response_neo4j_params", $(@el)).append pre
 
       code = $('<code />').text(JSON.stringify(cypher.results, null, 2))
-      pre = $('<pre class="json" id="results_'+@numCyphers+'"'+@displayNone()+' />').append code
+      pre = $("<pre class='json' id='results_#{@numCyphers}'#{@displayNone()}/>").append code
       $(".response_neo4j_results", $(@el)).append pre
 
       @numCyphers++
