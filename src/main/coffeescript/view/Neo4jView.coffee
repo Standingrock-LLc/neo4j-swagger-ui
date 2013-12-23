@@ -1,49 +1,75 @@
 class Neo4jView extends Backbone.View
   events: {
-  'click a.query'       : 'switchQuery'
+  'click .cyphers_list li'       : 'switchCypher'
   }
 
   initialize: ->
 
   render: ->
     template = @template()
-    $(@el).html(template(@model))
 
-    @switchToDescription()
+    $(@el).html(template)
 
-    @isParam = @model.isParam
+    @addCyphers()
 
-    if @isParam
-      $('.notice', $(@el)).text('Click to set as parameter value')
+    # log @model
+
+    # console.log(cyphers)
 
     @
 
   template: ->
-      Handlebars.templates.signature
+    Handlebars.templates.neo4j_query
 
-  # handler for show signature
-  switchToDescription: (e) ->
+  displayNone: ->
+    return if @numCyphers then ' style="display:none"' else ''
+
+  addCypherNumber: ->
+    $(".cyphers_list", $(@el)).append '<li>'+(@numCyphers+1)+'</li>'
+
+  addCypher: (cypher) ->
+    # log cypher
+    if cypher.query
+      @addCypherNumber()
+
+      $(".response_neo4j_query", $(@el)).append '<pre id="query_'+@numCyphers+'"'+@displayNone()+'>' + cypher.query.replace(/\n/g, "<br>") + "</pre>"
+
+      code = $('<code />').text(JSON.stringify(cypher.params, null, 2))
+      pre = $('<pre class="json" id="params_'+@numCyphers+'"'+@displayNone()+'/>').append code
+      $(".response_neo4j_params", $(@el)).append pre
+
+      code = $('<code />').text(JSON.stringify(cypher.results, null, 2))
+      pre = $('<pre class="json" id="results_'+@numCyphers+'"'+@displayNone()+' />').append code
+      $(".response_neo4j_results", $(@el)).append pre
+
+      @numCyphers++
+    else
+      @addCypher c for c in cypher
+
+  addCyphers: ->
+    @numCyphers = 0
+    @addCypher @model
+    hljs.highlightBlock($('.response_neo4j_params', $(@el))[0])
+    hljs.highlightBlock($('.response_neo4j_results', $(@el))[0])
+
+  showQuery: (e) ->
     e?.preventDefault()
-    $(".snippet", $(@el)).hide()
-    $(".description", $(@el)).show()
-    $('.description-link', $(@el)).addClass('selected')
-    $('.snippet-link', $(@el)).removeClass('selected')
 
-  # handler for show sample
-  switchToSnippet: (e) ->
+
+  # handler for switching cyphers
+  switchCypher: (e) ->
     e?.preventDefault()
-    $(".description", $(@el)).hide()
-    $(".snippet", $(@el)).show()
-    $('.snippet-link', $(@el)).addClass('selected')
-    $('.description-link', $(@el)).removeClass('selected')
+    $("pre", $(@el)).hide()
+    $(".cyphers_list li", $(@el)).removeClass('selected')
+    # log(e)
+    e?.currentTarget.className+='selected'
+    id = parseInt(e?.currentTarget.textContent) - 1
+    # log id
+    @showCypher id
 
-  # handler for snippet to text area
-  snippetToTextArea: (e) ->
-    if @isParam
-      e?.preventDefault()
-      textArea = $('textarea', $(@el.parentNode.parentNode.parentNode))
-      if $.trim(textArea.val()) == ''
-        textArea.val(@model.sampleJSON)
-
-
+  # handler for show cypher by id
+  showCypher: (id) ->
+    $("#query_"+id, $(@el)).show()
+    $("#params_"+id, $(@el)).show()
+    $("#results_"+id, $(@el)).show()
 

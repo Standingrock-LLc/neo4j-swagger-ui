@@ -63,11 +63,11 @@ class OperationView extends Backbone.View
     statusCodeView = new StatusCodeView({model: statusCode, tagName: 'tr'})
     $('.operation-status', $(@el)).append statusCodeView.render().el
 
-  # addNeo4j: (param, consumes) ->
-  #   # Render a parameter
-  #   # param.consumes = consumes
-  #   neo4jView = new Neo4jView({model: param, tagName: 'tr', readOnly: @model.isReadOnly})
-  #   $('.neo4j_headers', $(@el)).append neo4jView.render().el
+  addNeo4j: (param) ->
+    # Render a parameter
+    # param.consumes = consumes
+    neo4jView = new Neo4jView({model: param})
+    $('.neo4j_headers', $(@el)).show().html neo4jView.render().el
 
   submitOperation: (e) ->
     e?.preventDefault()
@@ -311,32 +311,9 @@ class OperationView extends Backbone.View
 
 
     if headers["Neo4j"]
-      $('.neo4j_headers').show();
-
-      neo4j = JSON.parse(headers["Neo4j"]);
-
-      # check if obj or array
-      if neo4j.query
-        $(".response_neo4j_query", $(@el)).html "<pre>" + neo4j.query.replace(/\n/g, "<br>") + "</pre>"
-        code = $('<code />').text(JSON.stringify(neo4j.params), null, 2)
-        pre = $('<pre class="json" />').append(code)
-        $(".response_neo4j_params", $(@el)).html pre
-        code = $('<code />').text(JSON.stringify(neo4j.results), null, 2)
-        pre = $('<pre class="json" />').append(code)
-        $(".response_neo4j_results", $(@el)).html pre
-
-      else
-        neo = neo4j[0]
-        $(".response_neo4j_query", $(@el)).html "<pre>" + neo.query.replace(/\n/g, "<br>") + "</pre>"
-        code = $('<code />').text(JSON.stringify(neo.params), null, 2)
-        pre = $('<pre class="json" />').append(code)
-        $(".response_neo4j_params", $(@el)).html pre
-        code = $('<code />').text(JSON.stringify(neo.results), null, 2)
-        pre = $('<pre class="json" />').append(code)
-        $(".response_neo4j_results", $(@el)).html pre
-
-
-      # window.headers = headers
+      @addNeo4j(JSON.parse(headers["Neo4j"]));
+    else
+      $('.neo4j_headers').hide();
 
     $(".response_headers", $(@el)).html "<pre>" + JSON.stringify(headers, null, "  ").replace(/\n/g, "<br>") + "</pre>"
 

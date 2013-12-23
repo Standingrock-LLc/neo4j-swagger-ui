@@ -315,7 +315,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<h4>Neo4j Query</h4>\n<div class='block response_neo4j_query'></div>\n<h4>Neo4j Parmas</h4>\n<div class='block response_neo4j_params'></div>\n<h4>Neo4j Results</h4>\n<div class='block response_neo4j_results'></div>";
+  return "<h4>Neo4j Query</h4>\n<ul class='cyphers_list'></ul>\n<div class='block response_neo4j_query'></div>\n<h4>Neo4j Parmas</h4>\n<div class='block response_neo4j_params'></div>\n<h4>Neo4j Results</h4>\n<div class='block response_neo4j_results'></div>";
   });
 })();
 
@@ -478,7 +478,7 @@ function program11(depth0,data) {
   buffer += "\n          ";
   stack1 = helpers['if'].call(depth0, depth0.isReadOnly, {hash:{},inverse:self.program(11, program11, data),fn:self.program(9, program9, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n        </form>\n        <div class='response' style='display:none'>\n          <h4>Request URL</h4>\n          <div class='block request_url'></div>\n          <h4>Response Body</h4>\n          <div class='block response_body'></div>\n          <h4>Response Code</h4>\n          <div class='block response_code'></div>\n          <h4>Response Headers</h4>\n          <div class='block response_headers'></div>\n          <div class='neo4j_headers' style='display:none'>\n            <h4>Neo4j Query</h4>\n            <div class='block response_neo4j_query'></div>\n            <h4>Neo4j Parmas</h4>\n            <div class='block response_neo4j_params'></div>\n            <h4>Neo4j Results</h4>\n            <div class='block response_neo4j_results'></div>\n          </div>\n        </div>\n      </div>\n    </li>\n  </ul>\n";
+  buffer += "\n        </form>\n        <div class='response' style='display:none'>\n          <h4>Request URL</h4>\n          <div class='block request_url'></div>\n          <h4>Response Body</h4>\n          <div class='block response_body'></div>\n          <h4>Response Code</h4>\n          <div class='block response_code'></div>\n          <h4>Response Headers</h4>\n          <div class='block response_headers'></div>\n          <div class='neo4j_headers' style='display:none'></div>\n        </div>\n      </div>\n    </li>\n  </ul>\n";
   return buffer;
   });
 })();
@@ -1567,6 +1567,14 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       return $('.operation-status', $(this.el)).append(statusCodeView.render().el);
     };
 
+    OperationView.prototype.addNeo4j = function(param) {
+      var neo4jView;
+      neo4jView = new Neo4jView({
+        model: param
+      });
+      return $('.neo4j_headers', $(this.el)).show().html(neo4jView.render().el);
+    };
+
     OperationView.prototype.submitOperation = function(e) {
       var error_free, form, isFileUpload, map, o, opts, val, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       if (e != null) {
@@ -1826,7 +1834,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     };
 
     OperationView.prototype.showStatus = function(data) {
-      var code, content, contentType, headers, neo, neo4j, pre, response_body;
+      var code, content, contentType, headers, pre, response_body;
       content = data.content.data;
       headers = data.getHeaders();
       contentType = headers["Content-Type"];
@@ -1853,26 +1861,9 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       $(".response_code", $(this.el)).html("<pre>" + data.status + "</pre>");
       $(".response_body", $(this.el)).html(response_body);
       if (headers["Neo4j"]) {
-        $('.neo4j_headers').show();
-        neo4j = JSON.parse(headers["Neo4j"]);
-        if (neo4j.query) {
-          $(".response_neo4j_query", $(this.el)).html("<pre>" + neo4j.query.replace(/\n/g, "<br>") + "</pre>");
-          code = $('<code />').text(JSON.stringify(neo4j.params), null, 2);
-          pre = $('<pre class="json" />').append(code);
-          $(".response_neo4j_params", $(this.el)).html(pre);
-          code = $('<code />').text(JSON.stringify(neo4j.results), null, 2);
-          pre = $('<pre class="json" />').append(code);
-          $(".response_neo4j_results", $(this.el)).html(pre);
-        } else {
-          neo = neo4j[0];
-          $(".response_neo4j_query", $(this.el)).html("<pre>" + neo.query.replace(/\n/g, "<br>") + "</pre>");
-          code = $('<code />').text(JSON.stringify(neo.params), null, 2);
-          pre = $('<pre class="json" />').append(code);
-          $(".response_neo4j_params", $(this.el)).html(pre);
-          code = $('<code />').text(JSON.stringify(neo.results), null, 2);
-          pre = $('<pre class="json" />').append(code);
-          $(".response_neo4j_results", $(this.el)).html(pre);
-        }
+        this.addNeo4j(JSON.parse(headers["Neo4j"]));
+      } else {
+        $('.neo4j_headers').hide();
       }
       $(".response_headers", $(this.el)).html("<pre>" + JSON.stringify(headers, null, "  ").replace(/\n/g, "<br>") + "</pre>");
       $(".response", $(this.el)).slideDown();
@@ -2157,7 +2148,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     }
 
     Neo4jView.prototype.events = {
-      'click a.query': 'switchQuery'
+      'click .cyphers_list li': 'switchCypher'
     };
 
     Neo4jView.prototype.initialize = function() {};
@@ -2165,50 +2156,78 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     Neo4jView.prototype.render = function() {
       var template;
       template = this.template();
-      $(this.el).html(template(this.model));
-      this.switchToDescription();
-      this.isParam = this.model.isParam;
-      if (this.isParam) {
-        $('.notice', $(this.el)).text('Click to set as parameter value');
-      }
+      $(this.el).html(template);
+      this.addCyphers();
       return this;
     };
 
     Neo4jView.prototype.template = function() {
-      return Handlebars.templates.signature;
+      return Handlebars.templates.neo4j_query;
     };
 
-    Neo4jView.prototype.switchToDescription = function(e) {
+    Neo4jView.prototype.displayNone = function() {
+      if (this.numCyphers) {
+        return ' style="display:none"';
+      } else {
+        return '';
+      }
+    };
+
+    Neo4jView.prototype.addCypherNumber = function() {
+      return $(".cyphers_list", $(this.el)).append('<li>' + (this.numCyphers + 1) + '</li>');
+    };
+
+    Neo4jView.prototype.addCypher = function(cypher) {
+      var c, code, pre, _i, _len, _results;
+      if (cypher.query) {
+        this.addCypherNumber();
+        $(".response_neo4j_query", $(this.el)).append('<pre id="query_' + this.numCyphers + '"' + this.displayNone() + '>' + cypher.query.replace(/\n/g, "<br>") + "</pre>");
+        code = $('<code />').text(JSON.stringify(cypher.params, null, 2));
+        pre = $('<pre class="json" id="params_' + this.numCyphers + '"' + this.displayNone() + '/>').append(code);
+        $(".response_neo4j_params", $(this.el)).append(pre);
+        code = $('<code />').text(JSON.stringify(cypher.results, null, 2));
+        pre = $('<pre class="json" id="results_' + this.numCyphers + '"' + this.displayNone() + ' />').append(code);
+        $(".response_neo4j_results", $(this.el)).append(pre);
+        return this.numCyphers++;
+      } else {
+        _results = [];
+        for (_i = 0, _len = cypher.length; _i < _len; _i++) {
+          c = cypher[_i];
+          _results.push(this.addCypher(c));
+        }
+        return _results;
+      }
+    };
+
+    Neo4jView.prototype.addCyphers = function() {
+      this.numCyphers = 0;
+      this.addCypher(this.model);
+      hljs.highlightBlock($('.response_neo4j_params', $(this.el))[0]);
+      return hljs.highlightBlock($('.response_neo4j_results', $(this.el))[0]);
+    };
+
+    Neo4jView.prototype.showQuery = function(e) {
+      return e != null ? e.preventDefault() : void 0;
+    };
+
+    Neo4jView.prototype.switchCypher = function(e) {
+      var id;
       if (e != null) {
         e.preventDefault();
       }
-      $(".snippet", $(this.el)).hide();
-      $(".description", $(this.el)).show();
-      $('.description-link', $(this.el)).addClass('selected');
-      return $('.snippet-link', $(this.el)).removeClass('selected');
-    };
-
-    Neo4jView.prototype.switchToSnippet = function(e) {
+      $("pre", $(this.el)).hide();
+      $(".cyphers_list li", $(this.el)).removeClass('selected');
       if (e != null) {
-        e.preventDefault();
+        e.currentTarget.className += 'selected';
       }
-      $(".description", $(this.el)).hide();
-      $(".snippet", $(this.el)).show();
-      $('.snippet-link', $(this.el)).addClass('selected');
-      return $('.description-link', $(this.el)).removeClass('selected');
+      id = parseInt(e != null ? e.currentTarget.textContent : void 0) - 1;
+      return this.showCypher(id);
     };
 
-    Neo4jView.prototype.snippetToTextArea = function(e) {
-      var textArea;
-      if (this.isParam) {
-        if (e != null) {
-          e.preventDefault();
-        }
-        textArea = $('textarea', $(this.el.parentNode.parentNode.parentNode));
-        if ($.trim(textArea.val()) === '') {
-          return textArea.val(this.model.sampleJSON);
-        }
-      }
+    Neo4jView.prototype.showCypher = function(id) {
+      $("#query_" + id, $(this.el)).show();
+      $("#params_" + id, $(this.el)).show();
+      return $("#results_" + id, $(this.el)).show();
     };
 
     return Neo4jView;

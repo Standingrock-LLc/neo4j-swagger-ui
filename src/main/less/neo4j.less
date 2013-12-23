@@ -39,3 +39,49 @@
         margin: 6px 8px 0 0;
     }
 }
+
+ul.cyphers_list {
+    overflow: hidden;
+    padding: 0;
+    display: block;
+    clear: none;
+    // float: left;
+    margin: 2px 10px 0 0;
+    li {
+        float: left;
+        clear: none;
+        margin: 0;
+        padding: 2px 10px;
+        border-right: 1px solid #dddddd;
+        font-size: 0.9em;
+        color: #547f00;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .selected {
+        color: #000;
+        text-decoration: underline;
+    }
+
+    li:hover, li:active, li.active {
+        color: black;
+        text-decoration: underline;
+    }
+
+    li {
+
+        &:first-child,
+        &.first {
+            padding-left: 8px;
+        }
+
+        &:last-child, &.last {
+            padding-right: 0;
+            border-right: none;
+        }
+    }
+    &:first-child, &.first {
+        padding-left: 14px;
+    }
+}
