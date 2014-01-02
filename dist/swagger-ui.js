@@ -315,7 +315,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<h4>Neo4j Query</h4>\n<ul class='cyphers_list'></ul>\n<div class='block response_neo4j_query'></div>\n<h4>Neo4j Parmas</h4>\n<div class='block response_neo4j_params'></div>\n<h4>Neo4j Results</h4>\n<div class='block response_neo4j_results'></div>";
+  return "<h4>Neo4j Query</h4>\n<ul class='cyphers_list'></ul>\n<div class='block response_neo4j_query'></div>\n<h4>Neo4j Params</h4>\n<div class='block response_neo4j_params'></div>\n<h4>Neo4j Results</h4>\n<div class='block response_neo4j_results'></div>";
   });
 })();
 
@@ -478,7 +478,7 @@ function program11(depth0,data) {
   buffer += "\n          ";
   stack1 = helpers['if'].call(depth0, depth0.isReadOnly, {hash:{},inverse:self.program(11, program11, data),fn:self.program(9, program9, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n        </form>\n        <div class='response' style='display:none'>\n          <h4>Request URL</h4>\n          <div class='block request_url'></div>\n          <h4>Response Body</h4>\n          <div class='block response_body'></div>\n          <h4>Response Code</h4>\n          <div class='block response_code'></div>\n          <h4>Response Headers</h4>\n          <div class='block response_headers'></div>\n          <div class='neo4j_headers' style='display:none'></div>\n        </div>\n      </div>\n    </li>\n  </ul>\n";
+  buffer += "\n        </form>\n        <div class='response' style='display:none'>\n          <h4>Request URL</h4>\n          <div class='block request_url'></div>\n          <h4>Response Body</h4>\n          <div class='block response_body'></div>\n          <div class='neo4j_headers' style='display:none'></div>\n          <h4>Response Code</h4>\n          <div class='block response_code'></div>\n          <h4>Response Headers</h4>\n          <div class='block response_headers'></div>\n        </div>\n      </div>\n    </li>\n  </ul>\n";
   return buffer;
   });
 })();
@@ -1642,7 +1642,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     };
 
     OperationView.prototype.handleFileUpload = function(map, form) {
-      var bodyParam, headerParams, o, obj, param, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2,
+      var bodyParam, el, headerParams, o, obj, param, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3,
         _this = this;
       console.log("it's a file upload");
       _ref = form.serializeArray();
@@ -1669,9 +1669,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         }
       }
       console.log(headerParams);
-      $.each($('input[type~="file"]'), function(i, el) {
-        return bodyParam.append($(el).attr('name'), el.files[0]);
-      });
+      _ref3 = form.find('input[type~="file"]');
+      for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+        el = _ref3[_l];
+        bodyParam.append($(el).attr('name'), el.files[0]);
+      }
       console.log(bodyParam);
       this.invocationUrl = this.model.supportHeaderParams() ? (headerParams = this.model.getHeaderParams(map), this.model.urlify(map, false)) : this.model.urlify(map, true);
       $(".request_url", $(this.el)).html("<pre>" + this.invocationUrl + "</pre>");

@@ -139,7 +139,7 @@ class OperationView extends Backbone.View
     console.log headerParams
 
     # add files
-    $.each $('input[type~="file"]'), (i, el) ->
+    for el in form.find('input[type~="file"]')
       bodyParam.append($(el).attr('name'), el.files[0])
 
     console.log(bodyParam)
